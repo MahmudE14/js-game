@@ -20,13 +20,13 @@ class Enemy {
         this.y = Math.random() * (CANVAS_HEIGHT - this.height);
         this.frame = 0;
         this.flapSpeed = Math.floor(Math.random() * 3 + 1);
-        this.angle = Math.random() * 500;
-        this.angleSpeed = Math.random() * 0.5 + 0.5;
+        this.angle = Math.random() * 500; // change values here to change
+        this.angleSpeed = Math.random() * 0.5 + 0.5; // change values here to change
     }
 
     update() {
-        this.x = CANVAS_WIDTH/2 * Math.sin(this.angle * Math.PI/90) + (CANVAS_WIDTH/2 - this.width/2);
-        this.y = CANVAS_HEIGHT/2 * Math.cos(this.angle * Math.PI/180) + (CANVAS_HEIGHT/2 - this.height/2);
+        this.x = CANVAS_WIDTH/2 * Math.sin(this.angle * Math.PI/90) + (CANVAS_WIDTH/2 - this.width/2); // change values here to change (alternate sin/cos or change 90/180 to any number)
+        this.y = CANVAS_HEIGHT/2 * Math.cos(this.angle * Math.PI/180) + (CANVAS_HEIGHT/2 - this.height/2); // change values here to change (alternate sin/cos or change 90/180 to any number)
         this.angle += this.angleSpeed;
 
         if (this.x + this.width < 0) this.x = CANVAS_WIDTH;
