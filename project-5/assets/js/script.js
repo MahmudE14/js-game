@@ -1,7 +1,9 @@
 const canvas = /** @type {HTMLCanvasElement} */ (document.getElementById('canvas1'));
 const ctx = canvas.getContext('2d');
-const CANVAS_WIDTH = canvas.width;
-const CANVAS_HEIGHT = canvas.height;
+const CANVAS_WIDTH = canvas.width = window.innerWidth;
+const CANVAS_HEIGHT = canvas.height = window.innerHeight;
+let score = 0;
+ctx.font = "50px Impact"
 
 let timeToNextRaven = 0;
 let ravenInterval = 800;
@@ -11,9 +13,9 @@ let ravens = [];
 
 class Raven {
     constructor() {
-        this.spriteWidth = 270;
+        this.spriteWidth = 271;
         this.spriteHeight = 194;
-        this.sizeModifier = Math.random() * 0.2 + 0.2;
+        this.sizeModifier = Math.random() * 0.6 + 0.4;
         this.width = this.spriteWidth * this.sizeModifier;
         this.height = this.spriteHeight * this.sizeModifier;
         this.x = CANVAS_WIDTH;
@@ -52,6 +54,13 @@ class Raven {
     }
 }
 
+function drawScore() {
+    ctx.fillStyle = "black";
+    ctx.fillText('Score: ' + score, 50, 75);
+    ctx.fillStyle = "white";
+    ctx.fillText('Score: ' + score, 55, 80);
+}
+
 function animate(timestamp) {
     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     let deltatime = timestamp - lastTime;
@@ -62,6 +71,8 @@ function animate(timestamp) {
         ravens.push(new Raven());
         timeToNextRaven = 0;
     }
+
+    drawScore();
 
     [...ravens].forEach(raven => raven.update(deltatime).draw());
     ravens = ravens.filter(raven => !raven.markedForDeletion)
