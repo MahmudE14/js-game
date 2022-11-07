@@ -44,13 +44,14 @@ class Raven {
             Math.floor(Math.random() * 255),
         ]
         this.color = `rgb(${this.randomColors[0]}, ${this.randomColors[1]}, ${this.randomColors[2]})`
+        this.hasTrail = Math.random() > 0.5;
     }
 
     update(deltatime) {
         if (this.y < 0 || this.y > CANVAS_HEIGHT - this.height) {
             this.directionY = this.directionY * -1
         }
-        
+
         this.x -= this.directionX;
         this.y += this.directionY;
 
@@ -59,10 +60,13 @@ class Raven {
         this.timeSinceFlap += deltatime;
 
         if (this.timeSinceFlap > this.flapInterval) {
-            if (this.frame > this.maxFrame) this.frame = 0;
-            else this.frame++;
-
+            this.frame = this.frame > this.maxFrame ? 0 : this.frame + 1
             this.timeSinceFlap = 0;
+            if (this.hasTrail) {
+                for (let i = 0; i < 5; i++) {
+                    particles.push(new Particle(this.x, this.y, this.width, this.color));
+                }
+            }
         }
 
         if (this.x < 0 - this.width) gameOver = true;
@@ -107,8 +111,38 @@ class Explosion {
     }
 
     draw() {
-        // this.frame % 5 * this.spriteWidth
         ctx.drawImage(this.image, this.frame * this.spriteWidth, 0, this.spriteWidth, this.spriteHeight, this.x, this.y - this.size/4, this.size, this.size);
+    }
+}
+
+let particles = [];
+class Particle {
+    constructor(x, y, size, color) {
+        this.size = size;
+        this.x = x + this.size/2 + Math.random() * 50 - 25;
+        this.y = y + this.size/3 + Math.random() * 50 - 25;
+        this.radius = Math.random() * this.size/10;
+        this.maxRadius = Math.random() * 20 + 35;
+        this.markedForDeletion = false;
+        this.speedX = Math.random() * 1 + 0.5;
+        this.color = color;
+    }
+
+    update() {
+        this.x += this.speedX;
+        this.radius += 0.5;
+        if (this.radius > this.maxRadius - 5) this.markedForDeletion = true;
+        return this;
+    }
+
+    draw() {
+        ctx.save();
+        ctx.globalAlpha = 1 - this.radius / this.maxRadius;
+        ctx.beginPath();
+        ctx.fillStyle = this.color;
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
     }
 }
 
@@ -129,7 +163,6 @@ function drawGameOver() {
 
 window.addEventListener("click", function (e) {
     const detectPixelColor = collisionCanvasCtx.getImageData(e.x, e.y, 1, 1);
-    console.log(detectPixelColor);
     const pixelColor = detectPixelColor.data;
     ravens.forEach(raven => {
         // detect explosion by color
@@ -139,7 +172,6 @@ window.addEventListener("click", function (e) {
             raven.markedForDeletion = true;
             score++;
             explosions.push(new Explosion(raven.x, raven.y, raven.width));
-            console.log(explosions);
         }
     })
 });
@@ -159,8 +191,10 @@ function animate(timestamp) {
 
     drawScore();
 
-    [...ravens, ...explosions].forEach(raven => raven.update(deltatime).draw());
+    [...particles, ...ravens, ...explosions].forEach(object => object.update(deltatime).draw());
     ravens = ravens.filter(raven => !raven.markedForDeletion);
+    explosions = explosions.filter(explosion => !explosion.markedForDeletion);
+    particles = particles.filter(particle => !particle.markedForDeletion);
 
     if (!gameOver) requestAnimationFrame(animate);
     else drawGameOver();
