@@ -148,14 +148,13 @@ window.addEventListener("load", function () {
 
     update(deltaTime) {
       super.update(deltaTime);
+      if (this.y < 0 - this.height - 1) this.markedForDeletion = true;
       this.y += this.vy * deltaTime;
 
       if (this.y > this.maxLength) this.vy *= -1;
-      if (this.y < 0 - this.height) this.markedForDeletion = true;
     }
 
-    // draw(ctx) {
-    draw() {
+    draw(ctx) {
         ctx.beginPath();
         ctx.moveTo(this.x + this.width/2, 0);
         ctx.lineTo(this.x + this.width/2, this.y + 10);
