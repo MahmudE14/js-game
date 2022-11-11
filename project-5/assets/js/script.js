@@ -199,4 +199,5 @@ function animate(timestamp) {
     if (!gameOver) requestAnimationFrame(animate);
     else drawGameOver();
 }
+
 animate(0);
