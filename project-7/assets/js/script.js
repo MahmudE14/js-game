@@ -13,6 +13,8 @@ window.addEventListener("load", function () {
     constructor() {
       this.keys = [];
       this.controlKeys = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
+      this.touchY = "";
+      this.touchThreshold = 30;
 
       window.addEventListener("keydown", (e) => {
         if (
@@ -27,6 +29,25 @@ window.addEventListener("load", function () {
         if (this.controlKeys.indexOf(e.key) > -1) {
           this.keys.splice(this.keys.indexOf(e.key), 1);
         }
+      });
+
+      window.addEventListener("touchstart", e => {
+        this.touchY = e.changedTouches[0].pageY;
+      });
+
+      window.addEventListener("touchmove", e => {
+        const swipeDistance = e.changedTouches[0].pageY - this.touchY;
+        if (swipeDistance < -this.touchThreshold && this.keys.indexOf("swipe up") === -1) {
+          this.keys.push("swipe up");
+        } else if (swipeDistance > this.touchThreshold && this.keys.indexOf("swipe down") === -1) {
+          this.keys.push("swipe down");
+          if (gameOver) restartGame();
+        }
+      });
+
+      window.addEventListener("touchend", e => {
+        this.keys.splice(this.keys.splice('swipe up'), 1);
+        this.keys.splice(this.keys.splice('swipe down'), 1);
       });
     }
   }
@@ -80,7 +101,7 @@ window.addEventListener("load", function () {
         this.speed = 5;
       } else if (input.keys.indexOf("ArrowLeft") > -1) {
         this.speed = -5;
-      } else if (input.keys.indexOf("ArrowUp") > -1 && this.onGround()) {
+      } else if ((input.keys.indexOf("ArrowUp") > -1 || input.keys.indexOf("swipe up") > -1) && this.onGround()) {
         this.vy = -30;
       } else {
         this.speed = 0;
@@ -249,9 +270,9 @@ window.addEventListener("load", function () {
     if (gameOver) {
       context.textAlign = "center";
       context.fillStyle = "black";
-      context.fillText("Game Over, press Enter to restart!", CANVAS_WIDTH / 2, 200);
+      context.fillText("Game Over, press Enter or swipe down to restart!", CANVAS_WIDTH / 2, 200);
       context.fillStyle = "white";
-      context.fillText("Game Over, press Enter to restart!", CANVAS_WIDTH / 2 + 2, 200 + 2);
+      context.fillText("Game Over, press Enter or swipe down to restart!", CANVAS_WIDTH / 2 + 2, 200 + 2);
     }
   }
 
