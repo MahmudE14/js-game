@@ -285,6 +285,18 @@ window.addEventListener("load", function () {
     animate(0);
   }
 
+  function toggleFullScreen() {
+    if (!document.fullscreenElement) {
+      canvas.requestFullscreen().catch(err => {
+        alert(`Error, can't enable full-sceen mode: ${err.message}`)
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  }
+
+  fullScreenButton.addEventListener("click", toggleFullScreen);
+
   const input = new InputHandler();
   const player = new Player(CANVAS_WIDTH, CANVAS_HEIGHT);
   const background = new Background(CANVAS_WIDTH, CANVAS_HEIGHT);
