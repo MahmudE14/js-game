@@ -3,7 +3,7 @@ window.addEventListener("load", function () {
     document.getElementById("canvas1")
   );
   const ctx = canvas.getContext("2d");
-  const CANVAS_WIDTH = (canvas.width = 800);
+  const CANVAS_WIDTH = (canvas.width = 1400);
   const CANVAS_HEIGHT = (canvas.height = 720);
   let enemies = [];
   let score = 0;
@@ -20,7 +20,7 @@ window.addEventListener("load", function () {
           this.keys.indexOf(e.key) === -1
         ) {
           this.keys.push(e.key);
-        }
+        } else if (e.key === 'Enter' && gameOver) restartGame();
       });
 
       window.addEventListener("keyup", (e) => {
@@ -39,7 +39,7 @@ window.addEventListener("load", function () {
       this.spriteHeight = 0;
       this.width = 200;
       this.height = 200;
-      this.x = 0;
+      this.x = 100;
       this.y = this.gameHeight - this.height;
       this.image = playerImage;
       this.frameX = 0;
@@ -47,7 +47,7 @@ window.addEventListener("load", function () {
       this.frameY = 0;
       this.fps = 20;
       this.frameTimer = 0;
-      this.frameInterval = 1000/this.fps;
+      this.frameInterval = 1000 / this.fps;
       this.speed = 0;
       this.vy = 0;
       this.weight = 1;
@@ -56,11 +56,11 @@ window.addEventListener("load", function () {
 
     update(input, deltaTime, enemies) {
       // collision detection
-      enemies.forEach(enemy => {
-        const dx = (enemy.x + enemy.width/2) - (this.x + this.width/2);
-        const dy = (enemy.y + enemy.height/2) - (this.y + this.height/2);
+      enemies.forEach((enemy) => {
+        const dx = enemy.x + enemy.width / 2 - (this.x + this.width / 2);
+        const dy = enemy.y + enemy.height / 2 - (this.y + this.height / 2);
         const distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < enemy.width/2 + this.width/2) {
+        if (distance < enemy.width / 2 + this.width / 2) {
           gameOver = true;
         }
       });
@@ -132,6 +132,13 @@ window.addEventListener("load", function () {
     keyPressed(key) {
       return this.input.keys.length && this.input.keys.indexOf(key) > -1;
     }
+
+    restart() {
+      this.x = 100;
+      this.y = this.gameHeight - this.height;
+      this.maxFrame = 8;
+      this.frameY = 0;
+    }
   }
 
   class Background {
@@ -162,6 +169,10 @@ window.addEventListener("load", function () {
         this.height
       );
     }
+
+    restart() {
+      this.x = 0;
+    }
   }
 
   class Enemy {
@@ -177,7 +188,7 @@ window.addEventListener("load", function () {
       this.maxFrame = 5;
       this.fps = 20;
       this.frameTimer = 0;
-      this.frameInterval = 1000/this.fps;
+      this.frameInterval = 1000 / this.fps;
       this.speed = 8;
       this.markedForDeletion = false;
     }
@@ -223,11 +234,12 @@ window.addEventListener("load", function () {
       enemyTimer += deltaTime;
     }
 
-    enemies.forEach(enemy => enemy.update(deltaTime).draw(ctx));
-    enemies = enemies.filter(enemy => !enemy.markedForDeletion);
+    enemies.forEach((enemy) => enemy.update(deltaTime).draw(ctx));
+    enemies = enemies.filter((enemy) => !enemy.markedForDeletion);
   }
 
   function displayStatusText(/** @type {CanvasRenderingContext2D} */ context) {
+    context.textAlign = "left";
     context.font = "40px Helvetica";
     context.fillStyle = "black";
     context.fillText("Score: " + score, 20, 50);
@@ -237,10 +249,19 @@ window.addEventListener("load", function () {
     if (gameOver) {
       context.textAlign = "center";
       context.fillStyle = "black";
-      context.fillText("Game Over, Try again", CANVAS_WIDTH/2, 200);
+      context.fillText("Game Over, press Enter to restart!", CANVAS_WIDTH / 2, 200);
       context.fillStyle = "white";
-      context.fillText("Game Over, Try again", CANVAS_WIDTH/2 + 2, 200 + 2);
+      context.fillText("Game Over, press Enter to restart!", CANVAS_WIDTH / 2 + 2, 200 + 2);
     }
+  }
+
+  function restartGame() {
+    player.restart();
+    background.restart();
+    enemies = [];
+    score = 0;
+    gameOver = false;
+    animate(0);
   }
 
   const input = new InputHandler();
