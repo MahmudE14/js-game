@@ -3,7 +3,7 @@ import InputHandler from "./input.js";
 import Background from "./background.js";
 import {
     FlyingEnemy,
-    RunningEnemy,
+    GroundEnemy,
     ClimbingEnemy,
 } from "./enemies.js";
 
@@ -21,7 +21,7 @@ window.addEventListener("load", function () {
         constructor(width, height) {
             this.width = width;
             this.height = height;
-            this.groundMargin = 80;
+            this.groundMargin = 83;
             this.speed = 0;
             this.maxSpeed = 4;
             this.background = new Background(this);
@@ -59,6 +59,7 @@ window.addEventListener("load", function () {
         }
 
         addEnemy() {
+            if (this.speed > 0 && Math.random() < 0.5) this.enemies.push(new GroundEnemy(this));
             this.enemies.push(new FlyingEnemy(this));
         }
     }

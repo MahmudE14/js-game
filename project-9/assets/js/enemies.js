@@ -13,8 +13,8 @@ class Enemy {
         this.x -= this.speedX + this.game.speed;
         this.y += this.speedY;
         if (this.frameTimer > this.frameInterval) {
-            this.frameTimer++;
             this.frameX = this.frameX < this.maxFrame ? this.frameX + 1 : 0;
+            this.frameTimer = 0;
         } else {
             this.frameTimer += deltaTime;
         }
@@ -61,9 +61,18 @@ export class FlyingEnemy extends Enemy {
     }
 }
 
-export class RunningEnemy extends Enemy {
+export class GroundEnemy extends Enemy {
     constructor(game) {
-        // 
+        super()
+        this.game = game;
+        this.width = 60;
+        this.height = 87;
+        this.x = this.game.width;
+        this.y = this.game.height - this.height - this.game.groundMargin;
+        this.image = enemy_plant;
+        this.speedX = 0;
+        this.speedY = 0;
+        this.maxFrame = 1;
     }
 }
 
