@@ -11,15 +11,20 @@ export default class Player {
         this.width = 100;
         this.height = 91.3;
         this.x = 0;
-        this.y = this.game.height - this.height;
+        this.y = this.game.height - this.height - this.game.groundMargin;
         this.vy = 0;
         this.weight = 1;
         this.image = player;
         this.frameX = 0;
         this.frameY = 0;
         this.maxFrame = 5;
+        // fps control
+        this.fps = 20;
+        this.frameInterval = 1000/this.fps;
+        this.frameTimer = 0;
         this.speed = 0;
         this.maxSpeed = 10;
+        // consume state
         this.states = [
             new Sitting(this),
             new Running(this),
@@ -46,13 +51,18 @@ export default class Player {
         this.vy = !this.onGround() ? this.vy + this.weight : 0;
 
         // sprite animation
-        // this.frameX = this.frameX < this.maxFrame ? this.frameX + 1 : 0;
+        if (this.frameTimer > this.frameInterval) {
+            this.frameX = this.frameX < this.maxFrame ? this.frameX + 1 : 0;
+            this.frameTimer = 0;
+        } else {
+            this.frameTimer += deltaTime;
+        }
     }
 
     draw(/** @type {CanvasRenderingContext2D} */ context) {
         context.drawImage(
             this.image,
-            this.frameX * this.weight,
+            this.frameX * this.width,
             this.frameY * this.height,
             this.width,
             this.height,
@@ -64,7 +74,7 @@ export default class Player {
     }
 
     onGround() {
-        return this.y >= this.game.height - this.height;
+        return this.y >= this.game.height - this.height - this.game.groundMargin;
     }
 
     setState(/** @type {Number} */ state) {
