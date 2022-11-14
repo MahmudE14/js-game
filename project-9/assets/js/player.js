@@ -4,7 +4,8 @@ import {
     Jumping,
     Falling,
     Rolling,
-    Diving
+    Diving,
+    Hit
 } from "./playerStates.js";
 
 export default class Player {
@@ -34,6 +35,7 @@ export default class Player {
             new Falling(this.game),
             new Rolling(this.game),
             new Diving(this.game),
+            new Hit(this.game),
         ];
     }
 
@@ -53,6 +55,11 @@ export default class Player {
         // vertical movememt
         this.y += this.vy;
         this.vy = !this.onGround() ? this.vy + this.weight : 0;
+
+        // vertical bounderies
+        if (this.y > this.game.height - this.height - this.game.groundMargin) {
+            this.y = this.game.height - this.height - this.game.groundMargin;
+        }
 
         // sprite animation
         if (this.frameTimer > this.frameInterval) {
@@ -98,9 +105,14 @@ export default class Player {
                 enemy.y + enemy.height > this.y
             ) {
                 enemy.markedForDeletion = true;
-                this.game.score++;
-            } else {
-                // 
+
+                // add score if rolling or diving, else got hit
+                if (this.currentState === this.states[4] || this.currentState === this.states[5]) {
+                    this.game.score++;
+                } else {
+                    this.setState(6, 0);
+                }
+
             }
         });
     }
