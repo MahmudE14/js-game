@@ -3,7 +3,8 @@ import {
     Running,
     Jumping,
     Falling,
-    Rolling
+    Rolling,
+    Diving
 } from "./playerStates.js";
 
 export default class Player {
@@ -32,6 +33,7 @@ export default class Player {
             new Jumping(this.game),
             new Falling(this.game),
             new Rolling(this.game),
+            new Diving(this.game),
         ];
     }
 
@@ -44,6 +46,7 @@ export default class Player {
         else if (input.includes("ArrowLeft")) this.speed = -this.maxSpeed;
         else this.speed = 0;
 
+        // horizontal bounderies
         if (this.x < 0) this.x = 0;
         else if (this.x > this.game.width - this.width) this.x = this.game.width - this.width;
 
