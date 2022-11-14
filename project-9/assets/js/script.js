@@ -30,6 +30,8 @@ window.addEventListener("load", function () {
             this.input = new InputHandler(this);
             this.UI = new UI(this);
             this.enemies = [];
+            this.particles = [];
+            this.maxParticles = 50;
             this.enemyTimer = 0;
             this.enemyInterval = 1000;
             this.debug = true;
@@ -56,6 +58,16 @@ window.addEventListener("load", function () {
                 if (enemy.markedForDeletion) this.enemies.splice(this.enemies.indexOf(enemy), 1);
             });
 
+            // handle particles
+            this.particles.forEach((particle, index) => {
+                particle.update();
+                if (particle.markedForDeletion) this.particles.splice(index, 1);
+            });
+
+            if (this.particles.length > this.maxParticles) {
+                this.particles = this.particles.slice(0, this.maxParticles);
+            }
+
             return this;
         }
 
@@ -63,6 +75,7 @@ window.addEventListener("load", function () {
             this.background.draw(context);
             this.player.draw(context);
             this.enemies.forEach(enemy => enemy.draw(context));
+            this.particles.forEach(particle => particle.draw(context));
             this.UI.draw(context);
         }
 
