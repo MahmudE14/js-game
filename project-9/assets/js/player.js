@@ -3,6 +3,7 @@ import {
     Running,
     Jumping,
     Falling,
+    Rolling
 } from "./playerStates.js";
 
 export default class Player {
@@ -30,6 +31,7 @@ export default class Player {
             new Running(this),
             new Jumping(this),
             new Falling(this),
+            new Rolling(this),
         ];
         this.currentState = this.states[0];
         this.currentState.enter();
