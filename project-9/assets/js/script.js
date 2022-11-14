@@ -31,10 +31,11 @@ window.addEventListener("load", function () {
             this.UI = new UI(this);
             this.enemies = [];
             this.particles = [];
+            this.collisions = [];
             this.maxParticles = 50;
             this.enemyTimer = 0;
             this.enemyInterval = 1000;
-            this.debug = true;
+            this.debug = false;
             this.score = 0;
             this.fontColor = "black";
             this.player.currentState = this.player.states[0];
@@ -68,6 +69,12 @@ window.addEventListener("load", function () {
                 this.particles = this.particles.slice(0, this.maxParticles);
             }
 
+            // handle collision sprites
+            this.collisions.forEach((collision, index) => {
+                collision.update(deltaTime);
+                if (collision.markedForDeletion) this.collisions.splice(index, 1);
+            })
+
             return this;
         }
 
@@ -76,6 +83,7 @@ window.addEventListener("load", function () {
             this.player.draw(context);
             this.enemies.forEach(enemy => enemy.draw(context));
             this.particles.forEach(particle => particle.draw(context));
+            this.collisions.forEach(collision => collision.draw(context));
             this.UI.draw(context);
         }
 
