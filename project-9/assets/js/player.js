@@ -8,6 +8,7 @@ import {
     Hit
 } from "./playerStates.js";
 import { CollisionAnimation } from "./collisionAnimation.js";
+import { FloatingMessage } from "./floatingMessages.js";
 
 export default class Player {
     constructor(game) {
@@ -38,15 +39,18 @@ export default class Player {
             new Diving(this.game),
             new Hit(this.game),
         ];
+        this.currentState = null;
     }
 
     update(/** @type {Array} */ input, deltaTime) {
         this.checkCollision();
         this.currentState.handleInput(input);
+
         // horizontal movement
         this.x += this.speed;
-        if (input.includes("ArrowRight")) this.speed = this.maxSpeed;
-        else if (input.includes("ArrowLeft")) this.speed = -this.maxSpeed;
+        // if user not in the state of hit move left and right on left/right arrow key press
+        if (input.includes("ArrowRight") && this.currentState !== this.states[6]) this.speed = this.maxSpeed;
+        else if (input.includes("ArrowLeft") && this.currentState !== this.states[6]) this.speed = -this.maxSpeed;
         else this.speed = 0;
 
         // horizontal bounderies
@@ -117,8 +121,18 @@ export default class Player {
                 // add score if rolling or diving, else got hit
                 if (this.currentState === this.states[4] || this.currentState === this.states[5]) {
                     this.game.score++;
+                    this.game.floatingMessages.push(
+                        new FloatingMessage("+1", enemy.x, enemy.y, 120, 50)
+                    );
                 } else {
+                    this.game.lives--;
+                    this.game.score -= 5;
+                    this.game.floatingMessages.push(
+                        new FloatingMessage("-5", enemy.x, enemy.y, 120, 50)
+                    );
                     this.setState(6, 0);
+                    if (this.game.lives <= 0) this.game.gameOver = true;
+                    if (this.game.score <= 0) this.game.gameOver = true;
                 }
 
             }
