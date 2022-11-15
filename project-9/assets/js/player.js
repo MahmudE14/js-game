@@ -126,11 +126,18 @@ export default class Player {
                     );
                 } else {
                     this.game.lives--;
+                    this.setState(6, 0);
+
+                    if (this.game.score - 5 <= 0) {
+                        this.game.score = 0;
+                        this.game.gameOver = true;
+                        return;
+                    }
+
                     this.game.score -= 5;
                     this.game.floatingMessages.push(
                         new FloatingMessage("-5", enemy.x, enemy.y, 120, 50)
                     );
-                    this.setState(6, 0);
                     if (this.game.lives <= 0) this.game.gameOver = true;
                     if (this.game.score <= 0) this.game.gameOver = true;
                 }
