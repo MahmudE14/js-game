@@ -46,7 +46,7 @@ window.addEventListener("load", function () {
             this.gameOver = false;
             this.player.currentState = this.player.states[0];
             this.player.currentState.enter();
-            this.lives = 5;
+            this.lives = 10;
         }
 
         update(deltaTime) {
@@ -103,6 +103,25 @@ window.addEventListener("load", function () {
             else this.enemies.push(new ClimbingEnemy(this));
 
             this.enemies.push(new FlyingEnemy(this));
+        }
+
+        restartGame() {
+            this.player.restart();
+            this.background.restart();
+            this.enemies = [];
+            this.particles = [];
+            this.collisions = [];
+            this.floatingMessages = [];
+            this.enemyTimer = 0;
+            this.debug = false;
+            this.score = 0;
+            this.time = 0;
+            this.gameOver = false;
+            this.player.currentState = this.player.states[0];
+            this.player.currentState.enter();
+            this.lives = 10;
+
+            animate(0);
         }
     }
 

@@ -1,4 +1,5 @@
 export class CollisionAnimation {
+    /** @todo add explosion sound */
     constructor(game, x, y) {
         this.game = game;
         this.image = collisionAnimation;

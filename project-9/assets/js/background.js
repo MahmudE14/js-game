@@ -55,4 +55,8 @@ export default class Background {
             layer.draw(context);
         })
     }
+
+    restart() {
+        this.backgroundLayers.forEach(layer => layer.x = 0);
+    }
 }

@@ -6,7 +6,8 @@ export default class InputHandler {
 
         window.addEventListener("keydown", (e) => {
             if (this.controlKeys.indexOf(e.key) > -1 && this.keys.indexOf(e.key) === -1) {
-                this.keys.push(e.key);
+                if (e.key === "Enter" && this.game.gameOver) this.game.restartGame();
+                else this.keys.push(e.key);
             } else if (e.key === "d") this.game.debug = !this.game.debug;
         });
 

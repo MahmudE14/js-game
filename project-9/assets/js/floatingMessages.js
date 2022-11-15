@@ -1,4 +1,8 @@
 export class FloatingMessage {
+    /**
+     * @todo add message type and play sound based on that
+     * @note types - score++ | lives--
+     */
     constructor(value, x, y, targetX, targetY){
         this.value = value;
         this.x = x;

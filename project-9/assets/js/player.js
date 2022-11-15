@@ -138,4 +138,17 @@ export default class Player {
             }
         });
     }
+
+    restart() {
+        this.x = 0;
+        this.y = this.game.height - this.height - this.game.groundMargin;
+        this.vy = 0;
+        this.weight = 1;
+        this.frameX = 0;
+        this.frameY = 0;
+        this.maxFrame = 5;
+        this.frameTimer = 0;
+        this.speed = 0;
+        this.currentState = null;
+    }
 }

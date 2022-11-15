@@ -68,6 +68,14 @@ export class UI {
                     this.game.height * 0.5 + 40
                 );
             }
+
+            // restart text
+            context.font = context.font = `${this.fontSize * 0.7}px ${this.fontFamily}`;
+            context.fillText(
+                "Press Enter to restart",
+                this.game.width * 0.5,
+                this.game.height * 0.5 + 100
+            );
         }
         context.restore();
     }
