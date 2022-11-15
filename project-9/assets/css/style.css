@@ -18,8 +18,17 @@ body {
     max-width: 100%;
     max-height: 100%;
     font-family: 'Creepster', cursive;
+    display: none;
 }
 
 img {
     display: none;
+}
+
+#loading {
+    position: absolute;
+    top: 10%;
+    width: 100%;
+    text-align: center;
+    font-size: 85px;
 }

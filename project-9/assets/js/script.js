@@ -9,7 +9,8 @@ import {
 import { UI } from "./UI.js";
 
 window.addEventListener("load", function () {
-    // loading.style.display = "none";
+    loading.style.display = "none";
+    canvas1.style.display = "block";
 
     const canvas = /** @type {HTMLCanvasElement} */ (
       document.getElementById("canvas1")
